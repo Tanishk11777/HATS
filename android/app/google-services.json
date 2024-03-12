@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "243524203291",
+    "project_id": "hats-7558f",
+    "storage_bucket": "hats-7558f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:243524203291:android:8b7bc9cbca52f7e31e19be",
+        "android_client_info": {
+          "package_name": "com.example.hats"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDv6M50rMjDI0YY-M5CCtmk45M52GLL3sU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
