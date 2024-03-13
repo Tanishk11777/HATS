@@ -85,7 +85,7 @@ class _LoginViewState extends State<LoginView> {
                           filled: true,
                         ),
                       ),
-                      SizedBox(height: 25),
+                      SizedBox(height: 30),
                       ElevatedButton(
                         onPressed: () async {
                           final email = _email.text;
@@ -96,6 +96,10 @@ class _LoginViewState extends State<LoginView> {
                               password: pass,
                             );
                             print(userCredential.user);
+                            // Navigator.of(context).pushNamedAndRemoveUntil(
+                            //   '/home/',
+                            //       (route) => false,
+                            // );
                           } on FirebaseAuthException catch (e) {
                             if(e.code=='invalid-credential'){
                               print('wrong password');
@@ -103,7 +107,31 @@ class _LoginViewState extends State<LoginView> {
                             else print('user not found');
                           }
                         },
-                        child: Text('Sign in'),
+                        child: Text('Sign in',
+                          style: TextStyle(color: Colors.white),),
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0, // Remove elevation
+                            padding: EdgeInsets.zero, // Remove padding
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8), // Set button border radius
+                            ),
+                            primary: Colors.blue,
+                          ),
+                      ),SizedBox(height: 17),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/register/',
+                                (route) => false,
+                          );
+                        },
+                        child: Text(
+                          'Create Account',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold, // Make the text bold
+                          ),
+                        ),
                       ),
                     ],
                   );
