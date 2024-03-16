@@ -97,6 +97,10 @@ class _RegisterViewState extends State<RegisterView> {
                                 password: pass,
                               );
                               print(userCredential.user);
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/home/',
+                                    (route) => false,
+                              );
                             } on FirebaseAuthException catch (e) {
                               if(e.code=='weak-password'){
                                 print('weak password');
@@ -127,7 +131,7 @@ class _RegisterViewState extends State<RegisterView> {
                           );
                         },
                         child: Text(
-                          'Already registerd?',
+                          'Already registered?',
                           style: TextStyle(
                             color: Colors.blue,
                             fontWeight: FontWeight.bold, // Make the text bold
@@ -183,6 +187,10 @@ class _EmailVerificationState extends State<EmailVerification> {
                 onPressed: () async {
                   final user = FirebaseAuth.instance.currentUser;
                   await user?.sendEmailVerification();
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/home/',
+                        (route) => false,
+                  );
                 },
                 child: Text(
                   "Send Email Verification",

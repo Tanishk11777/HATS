@@ -96,10 +96,10 @@ class _LoginViewState extends State<LoginView> {
                               password: pass,
                             );
                             print(userCredential.user);
-                            // Navigator.of(context).pushNamedAndRemoveUntil(
-                            //   '/home/',
-                            //       (route) => false,
-                            // );
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/home/',
+                                  (route) => false,
+                            );
                           } on FirebaseAuthException catch (e) {
                             if(e.code=='invalid-credential'){
                               print('wrong password');
