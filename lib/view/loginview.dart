@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hats/constants/routes.dart';
 import 'package:hats/firebase_options.dart';
+import 'package:hats/view/errordialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -91,20 +93,35 @@ class _LoginViewState extends State<LoginView> {
                           final email = _email.text;
                           final pass = _pass.text;
                           try {
-                            final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                            await FirebaseAuth.instance.signInWithEmailAndPassword(
                               email: email,
                               password: pass,
                             );
-                            print(userCredential.user);
+                            final user= FirebaseAuth.instance.currentUser;
+                            if(user?.emailVerified ?? false){
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                notesRoute,
+                                    (route) => false,
+                              );
+                            }else{
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                emailveriRoute,
+                                    (route) => false,
+                              );
+                            }
                             Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/home/',
+                              homeRoute,
                                   (route) => false,
                             );
                           } on FirebaseAuthException catch (e) {
-                            if(e.code=='invalid-credential'){
-                              print('wrong password');
+                            if(e.code=='wrong-password'){
+                              await showErrorDialog(context, 'wrong password');
+                            }else if(e.code=='invalid-email'){
+                              await showErrorDialog(context, 'Invalid Email');
                             }
-                            else print('user not found');
+                            else await showErrorDialog(context, 'user not found\nPlease Register');;
+                          } catch(e){
+                            await showErrorDialog(context, e.toString(),);
                           }
                         },
                         child: Text('Sign in',
@@ -121,7 +138,7 @@ class _LoginViewState extends State<LoginView> {
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/register/',
+                              registerRoute,
                                 (route) => false,
                           );
                         },
@@ -145,3 +162,4 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 }
+
