@@ -130,7 +130,7 @@ class _LoginViewState extends State<LoginView> {
                             elevation: 0, // Remove elevation
                             padding: EdgeInsets.zero, // Remove padding
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8), // Set button border radius
+                              borderRadius: BorderRadius.circular(8),
                             ),
                             primary: Colors.blue,
                           ),
