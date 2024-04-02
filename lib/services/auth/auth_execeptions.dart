@@ -1,5 +1,6 @@
 class UserNotFoundAuthException implements Exception {}
 class WrongPasswordAuthException implements Exception {}
+class NotInitializedException implements Exception {}
 
 
 class WeakPasswordAuthException implements Exception {}

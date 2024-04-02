@@ -1,8 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hats/constants/routes.dart';
-import 'package:hats/firebase_options.dart';
+import 'package:hats/services/auth/auth_execeptions.dart';
+import 'package:hats/services/auth/auth_service.dart';
 import 'package:hats/view/errordialog.dart';
 
 
@@ -48,9 +47,7 @@ class _RegisterViewState extends State<RegisterView> {
         color: Colors.black87,
         padding: EdgeInsets.all(20), // Add padding to the container
         child: FutureBuilder(
-          future: Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform,
-          ),
+          future: AuthService.firebase().initialize(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
@@ -93,29 +90,21 @@ class _RegisterViewState extends State<RegisterView> {
                         child: ElevatedButton(
                           onPressed: () async {
                             final email = _email.text;
-                            final pass = _pass.text;
+                            final password = _pass.text;
                             try {
-                              await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                                email: email,
-                                password: pass,
-                              );
-                              final user=FirebaseAuth.instance.currentUser;
-                              await user?.sendEmailVerification();
+                              await AuthService.firebase().createUser(email: email, password: password);
+                              AuthService.firebase().sendEmailVerification();
                               Navigator.of(context).pushNamed(
                                 emailveriRoute
                               );
-                            } on FirebaseAuthException catch (e) {
-                              if(e.code=='weak-password'){
-                                await showErrorDialog(context,'Weak Password');
-                              }else if(e.code=='email-already-in-use'){
-                                await showErrorDialog(context, 'email already registered');
-                              }else if(e.code=='invalid-email'){
-                                await showErrorDialog(context, 'Invalid Email');
-                              } else{
-                                  await showErrorDialog(context, 'Error: ${e.code}');
-                              }
-                            } catch(e){
-                              await showErrorDialog(context, e.toString());
+                            } on WeakPasswordAuthException{
+                              await showErrorDialog(context,'Weak Password');
+                            } on EmailAlreadyInUseAuthException{
+                              await showErrorDialog(context, 'email already registered');
+                            } on InvalidEmailAuthException{
+                              await showErrorDialog(context, 'Invalid Email');
+                            } on GenericAuthException{
+                              await showErrorDialog(context, 'Failed to register');
                             }
                           },
                           child: Text('Create Account',
@@ -192,8 +181,8 @@ class _EmailVerificationState extends State<EmailVerification> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
-                  final user = FirebaseAuth.instance.currentUser;
-                  await user?.sendEmailVerification();
+                  final user = AuthService.firebase().currentUser;
+                  await AuthService.firebase().sendEmailVerification();
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     homeRoute,
                         (route) => false,
@@ -215,7 +204,7 @@ class _EmailVerificationState extends State<EmailVerification> {
               SizedBox(height: 20),
               GestureDetector(
                 onTap: () async {
-                  await FirebaseAuth.instance.signOut();
+                  await AuthService.firebase().logout();
                   Navigator.of(context).pushNamedAndRemoveUntil(registerRoute, (route) => false);
                 },
                 child: Text(
