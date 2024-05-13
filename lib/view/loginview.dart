@@ -93,16 +93,19 @@ class _LoginViewState extends State<LoginView> {
                             await AuthService.firebase().login(email: email, password: password,);
                             final user= AuthService.firebase().currentUser;
                             if(user?.isEmailVerified ?? false){
+                              print("1");
                               Navigator.of(context).pushNamedAndRemoveUntil(
                                 notesRoute,
                                     (route) => false,
                               );
                             }else{
+                              print("2");
                               Navigator.of(context).pushNamedAndRemoveUntil(
                                 emailveriRoute,
                                     (route) => false,
                               );
                             }
+                            print("3");
                             Navigator.of(context).pushNamedAndRemoveUntil(
                               homeRoute,
                                   (route) => false,
@@ -152,6 +155,7 @@ class _LoginViewState extends State<LoginView> {
           },
         ),
       ),
+      backgroundColor: Colors.black87,
     );
   }
 }

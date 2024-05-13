@@ -3,11 +3,14 @@ import 'package:hats/constants/routes.dart';
 import 'package:hats/services/auth/auth_service.dart';
 import 'package:hats/view/loginview.dart';
 import 'package:hats/view/registerview.dart';
+import 'package:hats/view/note/notes_view.dart';
+import 'package:hats/view/note/new_notes_view.dart';
 import 'dart:developer' as dev;
+
+import 'package:path/path.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'Hats',
@@ -20,6 +23,8 @@ void main() async {
       registerRoute: (context)=> const RegisterView(),
       homeRoute: (context)=> const HomePage(),
       emailveriRoute: (context)=> const EmailVerification(),
+      notesRoute: (context)=> const NotesView(),
+      newNoteRoute: (context)=> const NewNoteView(),
     },
   ));
 }
@@ -38,6 +43,7 @@ class HomePage extends StatelessWidget {
               return Text('Error: ${snapshot.error}', style: TextStyle(color: Colors.red));
             }
             final user = AuthService.firebase().currentUser;
+            print(user);
             if (user != null && user.isEmailVerified) {
               print('User is logged in and email is verified.');
               return const NotesView();

@@ -53,7 +53,7 @@ class _RegisterViewState extends State<RegisterView> {
               case ConnectionState.none:
                 return Text('Not connected to the internet');
               case ConnectionState.waiting:
-                return CircularProgressIndicator();
+                return CircularProgressIndicator(strokeWidth: 3,);
               case ConnectionState.done:
                 if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
@@ -159,7 +159,8 @@ class _EmailVerificationState extends State<EmailVerification> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Email Verification',
+        title: const Text(
+          'Email Verification',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.black,
@@ -174,7 +175,7 @@ class _EmailVerificationState extends State<EmailVerification> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "Please click on link in email to verify your email",
+                "Please click on the link in the email to verify your email",
                 style: TextStyle(color: Colors.white),
                 textAlign: TextAlign.center,
               ),
@@ -202,14 +203,22 @@ class _EmailVerificationState extends State<EmailVerification> {
                 ),
               ),
               SizedBox(height: 20),
-              GestureDetector(
-                onTap: () async {
-                  await AuthService.firebase().logout();
-                  Navigator.of(context).pushNamedAndRemoveUntil(registerRoute, (route) => false);
-                },
-                child: Text(
-                  "Restart",
-                  style: TextStyle(color: Colors.white),
+              Center( // Wrap the GestureDetector with Center widget
+                child: GestureDetector(
+                  onTap: () async {
+                    await AuthService.firebase().logout();
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      loginRoute,
+                          (route) => false,
+                    );
+                  },
+                  child: Text(
+                    "Verification Done",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
               Expanded(child: SizedBox()), // This widget expands to fill available space
@@ -220,4 +229,5 @@ class _EmailVerificationState extends State<EmailVerification> {
     );
   }
 }
+
 
