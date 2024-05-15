@@ -3,4 +3,4 @@ const homeRoute = '/home/';
 const registerRoute = '/register/';
 const notesRoute = '/notes/';
 const emailveriRoute='/email/';
-const newNoteRoute = '/notes/new-note/';
+const UpdateNoteRoute = '/notes/new-note/';

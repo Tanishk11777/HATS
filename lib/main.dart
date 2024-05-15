@@ -4,7 +4,7 @@ import 'package:hats/services/auth/auth_service.dart';
 import 'package:hats/view/loginview.dart';
 import 'package:hats/view/registerview.dart';
 import 'package:hats/view/note/notes_view.dart';
-import 'package:hats/view/note/new_notes_view.dart';
+import 'package:hats/view/note/create_update_notes_view.dart';
 import 'dart:developer' as dev;
 
 import 'package:path/path.dart';
@@ -24,7 +24,7 @@ void main() async {
       homeRoute: (context)=> const HomePage(),
       emailveriRoute: (context)=> const EmailVerification(),
       notesRoute: (context)=> const NotesView(),
-      newNoteRoute: (context)=> const NewNoteView(),
+      UpdateNoteRoute: (context)=> const CreateUpdateNoteView(),
     },
   ));
 }
