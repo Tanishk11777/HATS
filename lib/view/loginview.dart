@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hats/constants/routes.dart';
 import 'package:hats/services/auth/auth_service.dart';
+import 'package:hats/services/auth/bloc/auth_bloc.dart';
+import 'package:hats/services/auth/bloc/auth_event.dart';
 import 'package:hats/utilities/error_dialog.dart';
 import 'package:hats/services/auth/auth_execeptions.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -90,25 +93,10 @@ class _LoginViewState extends State<LoginView> {
                           final email = _email.text;
                           final password = _pass.text;
                           try {
-                            await AuthService.firebase().login(email: email, password: password,);
-                            final user= AuthService.firebase().currentUser;
-                            if(user?.isEmailVerified ?? false){
-                              print("1");
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                notesRoute,
-                                    (route) => false,
-                              );
-                            }else{
-                              print("2");
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                emailveriRoute,
-                                    (route) => false,
-                              );
-                            }
-                            print("3");
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                              homeRoute,
-                                  (route) => false,
+                            context.read<AuthBloc>().add(AuthEventLogIn(
+                                email,
+                                password,
+                              ),
                             );
                           } on WrongPasswordAuthException{
                             await showErrorDialog(context, 'wrong password');
