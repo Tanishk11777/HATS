@@ -3,9 +3,11 @@ import 'package:hats/constants/routes.dart';
 import 'package:hats/services/auth/auth_service.dart';
 import 'package:hats/services/auth/bloc/auth_bloc.dart';
 import 'package:hats/services/auth/bloc/auth_event.dart';
+import 'package:hats/services/auth/bloc/auth_state.dart';
 import 'package:hats/utilities/error_dialog.dart';
 import 'package:hats/services/auth/auth_execeptions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hats/utilities/loading_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -17,6 +19,7 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
   late final TextEditingController _pass;
+  CloseDialog? _closeDialogHandle;
 
   @override
   void initState() {
@@ -34,7 +37,26 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocListener<AuthBloc,AuthState>(
+        listener: (context,state)async{
+          if(state is AuthStateLoggedOut){
+            final closeDialog=_closeDialogHandle;
+            if(!state.isLoading && closeDialog!=null){
+              closeDialog();
+              _closeDialogHandle=null;
+            }else if(state.isLoading && closeDialog==null){
+              _closeDialogHandle=showLoadingDialog(context: context, text: 'Loading...');
+            }
+            if(state.exception is UserNotFoundAuthException){
+              await showErrorDialog(context, 'User not found');
+            }else if(state.exception is WrongPasswordAuthException){
+              await showErrorDialog(context, 'Wrong Credentials');
+            }else if(state.exception is GenericAuthException){
+              await showErrorDialog(context, 'Authentication Error');
+            }
+      }
+    },
+    child: Scaffold(
       appBar: AppBar(
         title: Text(
           'Login',
@@ -88,42 +110,33 @@ class _LoginViewState extends State<LoginView> {
                         ),
                       ),
                       SizedBox(height: 30),
-                      ElevatedButton(
-                        onPressed: () async {
-                          final email = _email.text;
-                          final password = _pass.text;
-                          try {
-                            context.read<AuthBloc>().add(AuthEventLogIn(
+    ElevatedButton(
+                          onPressed: () async {
+                            final email = _email.text;
+                            final password = _pass.text;
+                            context.read<AuthBloc>().add(
+                                AuthEventLogIn(
                                 email,
                                 password,
                               ),
                             );
-                          } on WrongPasswordAuthException{
-                            await showErrorDialog(context, 'wrong password');
-                          } on InvalidEmailAuthException{
-                            await showErrorDialog(context, 'Invalid Email');
-                          } on UserNotFoundAuthException{
-                            await showErrorDialog(context, 'User not found');
-                          } on GenericAuthException{
-                            await showErrorDialog(context, 'Authentication Error');
-                          }
-                        },
-                        child: Text('Sign in',
-                          style: TextStyle(color: Colors.white),),
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0, // Remove elevation
-                            padding: EdgeInsets.zero, // Remove padding
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                          },
+                          child: Text('Sign in',
+                            style: TextStyle(color: Colors.white),),
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0, // Remove elevation
+                              padding: EdgeInsets.zero, // Remove padding
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              primary: Colors.blue,
                             ),
-                            primary: Colors.blue,
-                          ),
-                      ),SizedBox(height: 17),
+                        ),
+                      SizedBox(height: 17),
                       GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              registerRoute,
-                                (route) => false,
+                        onTap: () async {
+                          context.read<AuthBloc>().add(
+                            const AuthEventShouldRegister(),
                           );
                         },
                         child: Text(
@@ -144,6 +157,7 @@ class _LoginViewState extends State<LoginView> {
         ),
       ),
       backgroundColor: Colors.black87,
+    ),
     );
   }
 }

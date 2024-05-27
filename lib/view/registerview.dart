@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hats/constants/routes.dart';
 import 'package:hats/services/auth/auth_execeptions.dart';
 import 'package:hats/services/auth/auth_service.dart';
+import 'package:hats/services/auth/bloc/auth_bloc.dart';
+import 'package:hats/services/auth/bloc/auth_event.dart';
+import 'package:hats/services/auth/bloc/auth_state.dart';
 import 'package:hats/utilities/error_dialog.dart';
 
 
@@ -32,7 +36,33 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocListener<AuthBloc,AuthState>(
+      listener:(context,state)async{
+        if (state is AuthStateRegistering) {
+          if (state.exception is WeakPasswordAuthException) {
+            await showErrorDialog(
+            context,
+            'weak password',
+            );
+          } else if (state.exception is EmailAlreadyInUseAuthException) {
+            await showErrorDialog(
+            context,
+            'email already in use',
+            );
+          } else if (state.exception is GenericAuthException) {
+            await showErrorDialog(
+            context,
+            'Failed To Register',
+            );
+          } else if (state.exception is InvalidEmailAuthException) {
+            await showErrorDialog(
+            context,
+            'Invalid Email',
+            );
+          }
+        }
+      },
+      child:Scaffold(
       appBar: AppBar(
         title: Text(
           'New User',
@@ -91,21 +121,7 @@ class _RegisterViewState extends State<RegisterView> {
                           onPressed: () async {
                             final email = _email.text;
                             final password = _pass.text;
-                            try {
-                              await AuthService.firebase().createUser(email: email, password: password);
-                              AuthService.firebase().sendEmailVerification();
-                              Navigator.of(context).pushNamed(
-                                emailveriRoute
-                              );
-                            } on WeakPasswordAuthException{
-                              await showErrorDialog(context,'Weak Password');
-                            } on EmailAlreadyInUseAuthException{
-                              await showErrorDialog(context, 'email already registered');
-                            } on InvalidEmailAuthException{
-                              await showErrorDialog(context, 'Invalid Email');
-                            } on GenericAuthException{
-                              await showErrorDialog(context, 'Failed to register');
-                            }
+                            context.read<AuthBloc>().add(AuthEventRegister(email, password));
                           },
                           child: Text('Create Account',
                             style: TextStyle(color: Colors.white),),
@@ -121,10 +137,7 @@ class _RegisterViewState extends State<RegisterView> {
                       ),SizedBox(height: 17),
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                            loginRoute,
-                                (route) => false,
-                          );
+                          context.read<AuthBloc>().add(const AuthEventLogOut(),);
                         },
                         child: Text(
                           'Already registered?',
@@ -143,7 +156,7 @@ class _RegisterViewState extends State<RegisterView> {
           },
         ),
       ),
-    );
+    ),);
   }
 }
 
@@ -181,13 +194,8 @@ class _EmailVerificationState extends State<EmailVerification> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () async {
-                  final user = AuthService.firebase().currentUser;
-                  await AuthService.firebase().sendEmailVerification();
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    homeRoute,
-                        (route) => false,
-                  );
+                onPressed: () {
+                  context.read<AuthBloc>().add(const AuthEventSendEmailVerification(),);
                 },
                 child: Text(
                   "Resend Verification Email",
@@ -205,12 +213,8 @@ class _EmailVerificationState extends State<EmailVerification> {
               SizedBox(height: 20),
               Center( // Wrap the GestureDetector with Center widget
                 child: GestureDetector(
-                  onTap: () async {
-                    await AuthService.firebase().logout();
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      loginRoute,
-                          (route) => false,
-                    );
+                  onTap: () {
+                    context.read<AuthBloc>().add(const AuthEventLogOut());
                   },
                   child: Text(
                     "Verification Done",

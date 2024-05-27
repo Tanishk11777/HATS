@@ -48,7 +48,9 @@ class HomePage extends StatelessWidget {
       builder: (context,state){
       if(state is AuthStateLoggedIn){
         return const NotesView();
-      }else if(state is AuthStateNeedsVerification){
+      }else if(state is AuthStateRegistering) {
+        return const RegisterView();
+      } else if(state is AuthStateNeedsVerification){
         return const EmailVerification();
       }else if(state is AuthStateLoggedOut){
         return const LoginView();
