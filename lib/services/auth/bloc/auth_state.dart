@@ -25,6 +25,8 @@ class AuthStateRegistering extends AuthState {
   }) : super(isLoading: isLoading);
 }
 
+
+
 class AuthStateForgotPassword extends AuthState {
   final Exception? exception;
   final bool hasSentEmail;

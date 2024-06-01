@@ -7,6 +7,7 @@ import 'package:hats/services/auth/bloc/auth_bloc.dart';
 import 'package:hats/services/auth/bloc/auth_event.dart';
 import 'package:hats/services/auth/bloc/auth_state.dart';
 import 'package:hats/services/auth/firebase_auth_provider.dart';
+import 'package:hats/view/forgot_password_view.dart';
 import 'package:hats/view/loginview.dart';
 import 'package:hats/view/registerview.dart';
 import 'package:hats/view/note/notes_view.dart';
@@ -48,7 +49,7 @@ class HomePage extends StatelessWidget {
     return BlocConsumer<AuthBloc,AuthState>(
       listener: (context,state){
         if(state.isLoading){
-          LoadingScreen().show(context: context, text: state.loadingText ?? 'Please wait a moment')
+          LoadingScreen().show(context: context, text: state.loadingText ?? 'Please wait a moment');
         }else{
           LoadingScreen().hide();
         }
@@ -58,7 +59,9 @@ class HomePage extends StatelessWidget {
         return const NotesView();
       }else if(state is AuthStateRegistering) {
         return const RegisterView();
-      } else if(state is AuthStateNeedsVerification){
+      } else if(state is AuthStateForgotPassword){
+        return const ForgotPasswordView();
+      }else if(state is AuthStateNeedsVerification){
         return const EmailVerification();
       }else if(state is AuthStateLoggedOut){
         return const LoginView();
