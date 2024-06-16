@@ -13,30 +13,32 @@ import 'package:hats/view/registerview.dart';
 import 'package:hats/view/note/notes_view.dart';
 import 'package:hats/view/note/create_update_notes_view.dart';
 import 'dart:developer' as dev;
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path/path.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
       MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Hats',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: BlocProvider<AuthBloc>(
-        create: (context)=>AuthBloc(FirebaseAuthProvider()),
-        child: const HomePage(),
-      ),
-      routes: {
-        loginRoute: (context)=> const LoginView(),
-        registerRoute: (context)=> const RegisterView(),
-        homeRoute: (context)=> const HomePage(),
-        emailveriRoute: (context)=> const EmailVerification(),
-        notesRoute: (context)=> const NotesView(),
-        UpdateNoteRoute: (context)=> const CreateUpdateNoteView(),
-      },
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        debugShowCheckedModeBanner: false,
+        title: 'Hats',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: BlocProvider<AuthBloc>(
+          create: (context)=>AuthBloc(FirebaseAuthProvider()),
+          child: const HomePage(),
+        ),
+        routes: {
+          loginRoute: (context)=> const LoginView(),
+          registerRoute: (context)=> const RegisterView(),
+          homeRoute: (context)=> const HomePage(),
+          emailveriRoute: (context)=> const EmailVerification(),
+          notesRoute: (context)=> const NotesView(),
+          UpdateNoteRoute: (context)=> const CreateUpdateNoteView(),
+        },
   ));
 }
 

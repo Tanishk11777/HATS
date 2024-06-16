@@ -38,8 +38,10 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
             await showPasswordResetSentDialog(context);
           }
           if (state.exception != null) {
-            await showErrorDialog(context,
-                'We could not process your request. Please make sure that you are a registered user, or if not, register a user now by going back one step.');
+            await showErrorDialog(
+              context,
+              'We could not process your request. Please make sure that you are a registered user, or if not, register a user now by going back one step.',
+            );
           }
         }
       },
@@ -57,66 +59,73 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
         body: Container(
           color: Colors.black87,
           padding: EdgeInsets.all(20), // Add padding to the container
-          child: Column(
-            children: [
-              Text(
-                'If you forgot your password, simply enter your email and we will send you a password reset link.',
-                style: TextStyle(color: Colors.white),
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height,
               ),
-              SizedBox(height: 20),
-              TextField(
-                keyboardType: TextInputType.emailAddress,
-                autocorrect: false,
-                autofocus: true,
-                controller: _controller,
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: 'Your email address....',
-                  hintStyle: TextStyle(color: Colors.white70),
-                  fillColor: Colors.white.withOpacity(0.2),
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              SizedBox(height: 25),
-              SizedBox(
-                width: 220,
-                child: ElevatedButton(
-                  onPressed: () {
-                    final email = _controller.text;
-                    context.read<AuthBloc>().add(AuthEventForgotPassword(email: email));
-                  },
-                  child: Text(
-                    'Send me password reset link',
+              child: Column(
+                children: [
+                  Text(
+                    'If you forgot your password, simply enter your email and we will send you a password reset link.',
                     style: TextStyle(color: Colors.white),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0, // Remove elevation
-                    padding: EdgeInsets.zero, // Remove padding
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8), // Set button border radius
+                  SizedBox(height: 20),
+                  TextField(
+                    keyboardType: TextInputType.emailAddress,
+                    autocorrect: false,
+                    autofocus: true,
+                    controller: _controller,
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: 'Your email address....',
+                      hintStyle: TextStyle(color: Colors.white70),
+                      fillColor: Colors.white.withOpacity(0.2),
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
-                    primary: Colors.blue,
                   ),
-                ),
-              ),
-              SizedBox(height: 17),
-              GestureDetector(
-                onTap: () {
-                  context.read<AuthBloc>().add(const AuthEventLogOut());
-                },
-                child: Text(
-                  'Back to login page',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontWeight: FontWeight.bold, // Make the text bold
+                  SizedBox(height: 25),
+                  SizedBox(
+                    width: 220,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        final email = _controller.text;
+                        context.read<AuthBloc>().add(AuthEventForgotPassword(email: email));
+                      },
+                      child: Text(
+                        'Send me password reset link',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0, // Remove elevation
+                        padding: EdgeInsets.zero, // Remove padding
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8), // Set button border radius
+                        ),
+                        primary: Colors.blue,
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(height: 17),
+                  GestureDetector(
+                    onTap: () {
+                      context.read<AuthBloc>().add(const AuthEventLogOut());
+                    },
+                    child: Text(
+                      'Back to login page',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold, // Make the text bold
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

@@ -59,7 +59,7 @@ class _LoginViewState extends State<LoginView> {
         ),
         body: Container(
           color: Colors.black87,
-          child:Padding(
+          child: Padding(
             padding: EdgeInsets.all(20), // Add padding to the container
             child: FutureBuilder(
               future: AuthService.firebase().initialize(),
@@ -73,96 +73,103 @@ class _LoginViewState extends State<LoginView> {
                     if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     } else {
-                      return Column(
-                        children: [
-                          TextField(
-                            controller: _email,
-                            keyboardType: TextInputType.emailAddress,
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              labelText: 'Email',
-                              labelStyle: TextStyle(color: Colors.white),
-                              fillColor: Colors.white.withOpacity(0.2),
-                              filled: true,
-                            ),
+                      return SingleChildScrollView(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: MediaQuery.of(context).size.height,
                           ),
-                          SizedBox(height: 10),
-                          TextField(
-                            controller: _pass,
-                            obscureText: true,
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              labelStyle: TextStyle(color: Colors.white),
-                              fillColor: Colors.white.withOpacity(0.2),
-                              filled: true,
-                            ),
-                          ),
-                          SizedBox(height: 30),
-                          ElevatedButton(
-                            onPressed: () async {
-                              final email = _email.text;
-                              final password = _pass.text;
-                              context.read<AuthBloc>().add(
-                                AuthEventLogIn(
-                                  email,
-                                  password,
+                          child: Column(
+                            children: [
+                              TextField(
+                                controller: _email,
+                                keyboardType: TextInputType.emailAddress,
+                                style: TextStyle(color: Colors.white),
+                                decoration: InputDecoration(
+                                  labelText: 'Email',
+                                  labelStyle: TextStyle(color: Colors.white),
+                                  fillColor: Colors.white.withOpacity(0.2),
+                                  filled: true,
                                 ),
-                              );
-                            },
-                            child: Text(
-                              'Sign in',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              elevation: 0, // Remove elevation
-                              padding: EdgeInsets.zero, // Remove padding
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
                               ),
-                              primary: Colors.blue,
-                            ),
-                          ),
-                          SizedBox(height: 17),
-                          GestureDetector(
-                            onTap: () async {
-                              context.read<AuthBloc>().add(
-                                const AuthEventForgotPassword(),
-                              );
-                            },
-                            child: Text(
-                              'Forgot Password',
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold, // Make the text bold
+                              SizedBox(height: 10),
+                              TextField(
+                                controller: _pass,
+                                obscureText: true,
+                                enableSuggestions: false,
+                                autocorrect: false,
+                                style: TextStyle(color: Colors.white),
+                                decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  labelStyle: TextStyle(color: Colors.white),
+                                  fillColor: Colors.white.withOpacity(0.2),
+                                  filled: true,
+                                ),
                               ),
-                            ),
-                          ),
-                          SizedBox(height: 12),
-                          GestureDetector(
-                            onTap: () async {
-                              context.read<AuthBloc>().add(
-                                const AuthEventShouldRegister(),
-                              );
-                            },
-                            child: Text(
-                              'Create Account',
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold, // Make the text bold
+                              SizedBox(height: 30),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  final email = _email.text;
+                                  final password = _pass.text;
+                                  context.read<AuthBloc>().add(
+                                    AuthEventLogIn(
+                                      email,
+                                      password,
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  'Sign in',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 0, // Remove elevation
+                                  padding: EdgeInsets.zero, // Remove padding
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  primary: Colors.blue,
+                                ),
                               ),
-                            ),
+                              SizedBox(height: 17),
+                              GestureDetector(
+                                onTap: () async {
+                                  context.read<AuthBloc>().add(
+                                    const AuthEventForgotPassword(),
+                                  );
+                                },
+                                child: Text(
+                                  'Forgot Password',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold, // Make the text bold
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 12),
+                              GestureDetector(
+                                onTap: () async {
+                                  context.read<AuthBloc>().add(
+                                    const AuthEventShouldRegister(),
+                                  );
+                                },
+                                child: Text(
+                                  'Create Account',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold, // Make the text bold
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       );
                     }
                   default:
                     return Text('Unexpected ConnectionState: ${snapshot.connectionState}');
                 }
-            },
-          ),
+              },
+            ),
           ),
         ),
       ),
