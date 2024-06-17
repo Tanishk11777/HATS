@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hats/extensions/buildcontext/loc.dart';
 import 'package:hats/services/auth/auth_service.dart';
 import 'package:hats/services/auth/bloc/auth_bloc.dart';
 import 'package:hats/services/auth/bloc/auth_event.dart';
@@ -38,18 +39,18 @@ class _LoginViewState extends State<LoginView> {
       listener: (context, state) async {
         if (state is AuthStateLoggedOut) {
           if (state.exception is UserNotFoundAuthException) {
-            await showErrorDialog(context, 'Cannot found user with entered credentials!');
+            await showErrorDialog(context, context.loc.login_error_cannot_find_user);
           } else if (state.exception is WrongPasswordAuthException) {
-            await showErrorDialog(context, 'Wrong Credentials');
+            await showErrorDialog(context, context.loc.login_error_wrong_credentials);
           } else if (state.exception is GenericAuthException) {
-            await showErrorDialog(context, 'Authentication Error');
+            await showErrorDialog(context, context.loc.login_error_auth_error);
           }
         }
       },
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Login',
+            context.loc.login,
             style: TextStyle(
               color: Colors.white,
             ),
@@ -85,7 +86,7 @@ class _LoginViewState extends State<LoginView> {
                                 keyboardType: TextInputType.emailAddress,
                                 style: TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
-                                  labelText: 'Email',
+                                  labelText: context.loc.email_text_field_placeholder,
                                   labelStyle: TextStyle(color: Colors.white),
                                   fillColor: Colors.white.withOpacity(0.2),
                                   filled: true,
@@ -99,7 +100,7 @@ class _LoginViewState extends State<LoginView> {
                                 autocorrect: false,
                                 style: TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
-                                  labelText: 'Password',
+                                  labelText: context.loc.password_text_field_placeholder,
                                   labelStyle: TextStyle(color: Colors.white),
                                   fillColor: Colors.white.withOpacity(0.2),
                                   filled: true,
@@ -118,7 +119,7 @@ class _LoginViewState extends State<LoginView> {
                                   );
                                 },
                                 child: Text(
-                                  'Sign in',
+                                  context.loc.signIn,
                                   style: TextStyle(color: Colors.white),
                                 ),
                                 style: ElevatedButton.styleFrom(
@@ -138,7 +139,7 @@ class _LoginViewState extends State<LoginView> {
                                   );
                                 },
                                 child: Text(
-                                  'Forgot Password',
+                                  context.loc.forgot_password,
                                   style: TextStyle(
                                     color: Colors.blue,
                                     fontWeight: FontWeight.bold, // Make the text bold
@@ -153,7 +154,7 @@ class _LoginViewState extends State<LoginView> {
                                   );
                                 },
                                 child: Text(
-                                  'Create Account',
+                                  context.loc.login_view_not_registered_yet,
                                   style: TextStyle(
                                     color: Colors.blue,
                                     fontWeight: FontWeight.bold, // Make the text bold

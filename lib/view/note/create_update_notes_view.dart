@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hats/extensions/buildcontext/loc.dart';
 import 'package:hats/services/auth/auth_service.dart';
 //import 'package:hats/services/cloud/cloud_storage_constants.dart';
 //import 'package:hats/services/crud/notes_service.dart';
@@ -97,7 +98,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
             color: Colors.white70, //change your color here
           ),
           title: Text(
-            'New Note',
+            context.loc.note,
            style: TextStyle(
             color: Colors.white,
             ),
@@ -129,8 +130,8 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                         controller: _textController,
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
-                        decoration: const InputDecoration(
-                          hintText: 'Start typing your note...',
+                        decoration: InputDecoration(
+                          hintText: context.loc.start_typing_your_note,
                         ),
                       ),
                     );

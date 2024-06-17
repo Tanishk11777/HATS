@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hats/constants/routes.dart';
 import 'package:hats/enums/menu_action.dart';
+import 'package:hats/extensions/buildcontext/loc.dart';
 import 'package:hats/services/auth/auth_service.dart';
 import 'package:hats/services/auth/bloc/auth_bloc.dart';
 import 'package:hats/services/auth/bloc/auth_event.dart';
@@ -10,6 +11,9 @@ import 'package:hats/services/cloud/firebase_cloud_storage.dart%20';
 //import 'package:hats/services/crud/notes_service.dart';
 import 'package:hats/utilities/logout_dialog.dart';
 import 'package:hats/view/note/notes_listview.dart';
+extension Count<T extends Iterable> on Stream<T> {
+  Stream<int> get getLength => map((event)=>event.length);
+}
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
@@ -32,11 +36,27 @@ class _NotesViewState extends State<NotesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Your Notes',
-          style: TextStyle(
-            color: Colors.white,
-          ),
+        title: StreamBuilder(
+          stream: _notesService.allNotes(ownerUserId: userId).getLength,
+          builder: (context,AsyncSnapshot<int> snapshot) {
+            if(snapshot.hasData){
+              final noteCount=snapshot.data ?? 0;
+              final text = context.loc.notes_title(noteCount);
+              return Text(
+                text,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              );
+            }else{
+              return Text(
+                '',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              );
+            }
+          }
         ),
         actions: [
           IconButton(onPressed: (){
@@ -58,8 +78,8 @@ class _NotesViewState extends State<NotesView> {
             }
           },
             itemBuilder: (context){
-              return const [
-                const PopupMenuItem<MenuAction>(
+              return [
+                PopupMenuItem<MenuAction>(
                   value: MenuAction.logout,
                   child: Row(
                     children: [
@@ -67,8 +87,8 @@ class _NotesViewState extends State<NotesView> {
                         padding: const EdgeInsets.only(right: 8.0),
                         child: Icon(Icons.logout),
                       ),
-                      const Text(
-                        'Logout',
+                      Text(
+                        context.loc.logout_button,
                         style: TextStyle(fontSize: 15),
                       ),
                     ],

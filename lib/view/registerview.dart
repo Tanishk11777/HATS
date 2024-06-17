@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hats/extensions/buildcontext/loc.dart';
 //import 'package:hats/constants/routes.dart';
 import 'package:hats/services/auth/auth_execeptions.dart';
 import 'package:hats/services/auth/auth_service.dart';
@@ -40,20 +41,20 @@ class _RegisterViewState extends State<RegisterView> {
       listener: (context, state) async {
         if (state is AuthStateRegistering) {
           if (state.exception is WeakPasswordAuthException) {
-            await showErrorDialog(context, 'Weak password');
+            await showErrorDialog(context, context.loc.register_error_weak_password);
           } else if (state.exception is EmailAlreadyInUseAuthException) {
-            await showErrorDialog(context, 'Email already in use');
+            await showErrorDialog(context, context.loc.register_error_email_already_in_use);
           } else if (state.exception is GenericAuthException) {
-            await showErrorDialog(context, 'Failed to register');
+            await showErrorDialog(context, context.loc.register_error_generic);
           } else if (state.exception is InvalidEmailAuthException) {
-            await showErrorDialog(context, 'Invalid email');
+            await showErrorDialog(context, context.loc.register_error_invalid_email);
           }
         }
       },
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'New User',
+            context.loc.register,
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: Colors.black,
@@ -86,7 +87,7 @@ class _RegisterViewState extends State<RegisterView> {
                               keyboardType: TextInputType.emailAddress,
                               style: TextStyle(color: Colors.white),
                               decoration: InputDecoration(
-                                labelText: 'Email',
+                                labelText: context.loc.email_text_field_placeholder,
                                 labelStyle: TextStyle(color: Colors.white),
                                 fillColor: Colors.white.withOpacity(0.2),
                                 filled: true,
@@ -100,7 +101,7 @@ class _RegisterViewState extends State<RegisterView> {
                               autocorrect: false,
                               style: TextStyle(color: Colors.white),
                               decoration: InputDecoration(
-                                labelText: 'Password',
+                                labelText: context.loc.password_text_field_placeholder,
                                 labelStyle: TextStyle(color: Colors.white),
                                 fillColor: Colors.white.withOpacity(0.2),
                                 filled: true,
@@ -116,7 +117,7 @@ class _RegisterViewState extends State<RegisterView> {
                                   context.read<AuthBloc>().add(AuthEventRegister(email, password));
                                 },
                                 child: Text(
-                                  'Create Account',
+                                  context.loc.register,
                                   style: TextStyle(color: Colors.white),
                                 ),
                                 style: ElevatedButton.styleFrom(
@@ -135,7 +136,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 context.read<AuthBloc>().add(const AuthEventLogOut());
                               },
                               child: Text(
-                                'Already registered?',
+                                context.loc.register_view_already_registered,
                                 style: TextStyle(
                                   color: Colors.blue,
                                   fontWeight: FontWeight.bold, // Make the text bold
@@ -170,8 +171,8 @@ class _EmailVerificationState extends State<EmailVerification> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Email Verification',
+        title: Text(
+          context.loc.verify_email,
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.black,
@@ -186,7 +187,7 @@ class _EmailVerificationState extends State<EmailVerification> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "Please click on the link in the email to verify your email",
+                context.loc.verify_email_view_prompt,
                 style: TextStyle(color: Colors.white),
                 textAlign: TextAlign.center,
               ),
@@ -196,7 +197,7 @@ class _EmailVerificationState extends State<EmailVerification> {
                   context.read<AuthBloc>().add(const AuthEventSendEmailVerification(),);
                 },
                 child: Text(
-                  "Resend Verification Email",
+                  context.loc.verify_email_send_email_verification,
                   style: TextStyle(color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -215,7 +216,7 @@ class _EmailVerificationState extends State<EmailVerification> {
                     context.read<AuthBloc>().add(const AuthEventLogOut());
                   },
                   child: Text(
-                    "Verification Done",
+                    context.loc.restart,
                     style: TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,

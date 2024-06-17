@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hats/extensions/buildcontext/loc.dart';
 import 'package:hats/services/auth/bloc/auth_bloc.dart';
 import 'package:hats/services/auth/bloc/auth_event.dart';
 import 'package:hats/services/auth/bloc/auth_state.dart';
@@ -40,7 +41,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
           if (state.exception != null) {
             await showErrorDialog(
               context,
-              'We could not process your request. Please make sure that you are a registered user, or if not, register a user now by going back one step.',
+              context.loc.forgot_password_view_generic_error,
             );
           }
         }
@@ -48,7 +49,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Forgot Password',
+            context.loc.forgot_password,
             style: TextStyle(
               color: Colors.white,
             ),
@@ -67,7 +68,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               child: Column(
                 children: [
                   Text(
-                    'If you forgot your password, simply enter your email and we will send you a password reset link.',
+                    context.loc.forgot_password_view_prompt,
                     style: TextStyle(color: Colors.white),
                   ),
                   SizedBox(height: 20),
@@ -78,7 +79,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     controller: _controller,
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                      hintText: 'Your email address....',
+                      hintText: context.loc.email_text_field_placeholder,
                       hintStyle: TextStyle(color: Colors.white70),
                       fillColor: Colors.white.withOpacity(0.2),
                       filled: true,
@@ -97,7 +98,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         context.read<AuthBloc>().add(AuthEventForgotPassword(email: email));
                       },
                       child: Text(
-                        'Send me password reset link',
+                        context.loc.forgot_password_view_send_me_link,
                         style: TextStyle(color: Colors.white),
                       ),
                       style: ElevatedButton.styleFrom(
@@ -116,7 +117,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                       context.read<AuthBloc>().add(const AuthEventLogOut());
                     },
                     child: Text(
-                      'Back to login page',
+                      context.loc.forgot_password_view_back_to_login,
                       style: TextStyle(
                         color: Colors.blue,
                         fontWeight: FontWeight.bold, // Make the text bold
